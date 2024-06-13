@@ -20,11 +20,30 @@ function App() {
     const issues = await getAllIssues();
     setIssues(issues);
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     await createIssue(newIssue);
     fetchIssues();
     setNewIssue({ title: '', description: '' });
+  };
+
+  const handleDelete = async (id) => {
+    await deleteIssue(id);
+    fetchIssues();
+  };
+
+  const handleUpdate = async (id) => {
+    const updatedIssue = prompt(
+      'Enter the new details (title,description):',
+    ).split(',');
+    if (updatedIssue.length === 2) {
+      await updateIssue(id, {
+        title: updatedIssue[0],
+        description: updatedIssue[1],
+      });
+      fetchIssues();
+    }
   };
 
   return (
@@ -34,6 +53,8 @@ function App() {
         {issues.map((issue) => (
           <li key={issue.id}>
             {issue.title}: {issue.description}
+            <button onClick={() => handleDelete(issue.id)}>Delete</button>
+            <button onClick={() => handleUpdate(issue.id)}>Update</button>
           </li>
         ))}
       </ul>
