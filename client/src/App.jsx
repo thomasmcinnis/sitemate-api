@@ -1,16 +1,18 @@
 import { useState, useEffect } from 'react';
 import {
   getAllIssues,
-  getIssueById,
   deleteIssue,
   updateIssue,
   createIssue,
 } from './services/api';
 import './App.css';
+import Modal from './components/Modal';
 
 function App() {
   const [issues, setIssues] = useState([]);
   const [newIssue, setNewIssue] = useState({ title: '', description: '' });
+  const [currentIssue, setCurrentIssue] = useState(null);
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     fetchIssues();
@@ -33,17 +35,16 @@ function App() {
     fetchIssues();
   };
 
-  const handleUpdate = async (id) => {
-    const updatedIssue = prompt(
-      'Enter the new details (title,description):',
-    ).split(',');
-    if (updatedIssue.length === 2) {
-      await updateIssue(id, {
-        title: updatedIssue[0],
-        description: updatedIssue[1],
-      });
-      fetchIssues();
-    }
+  const handleUpdate = async (issue) => {
+    setCurrentIssue(issue);
+    setShowModal(true);
+  };
+
+  const saveUpdatedIssue = async (e) => {
+    e.preventDefault();
+    await updateIssue(currentIssue.id, currentIssue);
+    setShowModal(false);
+    fetchIssues();
   };
 
   return (
@@ -75,6 +76,27 @@ function App() {
         />
         <button type="submit">Add Issue</button>
       </form>
+      <Modal show={showModal} onClose={() => setShowModal(false)}>
+        <form onSubmit={saveUpdatedIssue}>
+          <input
+            type="text"
+            placeholder="Title"
+            value={currentIssue?.title || ''}
+            onChange={(e) =>
+              setCurrentIssue({ ...currentIssue, title: e.target.value })
+            }
+          />
+          <input
+            type="text"
+            placeholder="Description"
+            value={currentIssue?.description || ''}
+            onChange={(e) =>
+              setCurrentIssue({ ...currentIssue, description: e.target.value })
+            }
+          />
+          <button type="submit">Save</button>
+        </form>
+      </Modal>
     </div>
   );
 }
