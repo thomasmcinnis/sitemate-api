@@ -36,11 +36,6 @@ select {
   font: inherit;
 }
 
-ul,
-ol {
-  list-style: none;
-}
-
 p,
 h1,
 h2,
@@ -164,4 +159,24 @@ h3 {
 }
 h4 {
   font-size: var(--step-2);
+}
+button {
+  background: hsl(var(--accent));
+  color: white;
+  border: none;
+  padding: 4px;
+  margin: 0 4px;
+  border-radius: var(--radius-s);
+  cursor: pointer;
+}
+
+button:hover {
+  background: blue;
+}
+ul,
+ol {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-s-m);
 }
